@@ -1,0 +1,30 @@
+[
+    {
+        "id": "post_67b3a2f458d129.12345678",
+        "title": "Major Drug Bust in Downtown District",
+        "content": "<p>In a coordinated operation this morning, local law enforcement agencies successfully dismantled a significant drug distribution network operating in the downtown district.</p><p><strong>Key Details:</strong></p><ul><li>Operation conducted at 6:00 AM at multiple locations</li><li>Seized over 50 kg of illegal narcotics</li><li>5 suspects arrested and charged</li><li>Estimated street value: $2.3 million</li></ul><p>The investigation had been ongoing for <em>6 months</em> with cooperation from multiple agencies. This represents one of the largest drug seizures in the city this year.</p><p class='warning-text'><strong>WARNING:</strong> Residents are advised to remain vigilant and report any suspicious activities in the area.</p>",
+        "date": "2024-01-15 08:30:00",
+        "status": "published"
+    },
+    {
+        "id": "post_67b3a2f458d129.87654321",
+        "title": "Armed Robbery at Local Convenience Store",
+        "content": "<p>A convenience store on Main Street was robbed at gunpoint yesterday evening around 9:45 PM.</p><p><strong>Incident Summary:</strong></p><ul><li>Two masked suspects entered the store</li><li>Demanded cash from the register</li><li>No injuries reported</li><li>Suspects fled on foot</li></ul><p>Store security cameras captured footage of the incident. Police are reviewing the footage and asking for public assistance.</p><p><em>Anyone with information is urged to contact the tip line immediately.</em></p>",
+        "date": "2024-01-14 22:15:00",
+        "status": "published"
+    },
+    {
+        "id": "post_67b3a2f458d129.11111111",
+        "title": "Vehicle Theft Ring Exposed",
+        "content": "<p>Police have uncovered an organized vehicle theft ring responsible for stealing luxury cars across the metropolitan area.</p><p><strong>Investigation Results:</strong></p><ol><li>7 arrests made in coordinated raids</li><li>12 stolen vehicles recovered</li><li>Chop shop operations shut down</li><li>International connections discovered</li></ol><p>The ring had been operating for over a year, targeting high-end vehicles in affluent neighborhoods. Stolen cars were quickly disassembled and parts sold internationally.</p><br><p><strong>Vehicle owners are reminded to:</strong></p><ul><li>Always lock vehicles</li><li>Park in well-lit areas</li><li>Use steering wheel locks</li><li>Install GPS tracking devices</li></ul>",
+        "date": "2024-01-13 14:20:00",
+        "status": "published"
+    },
+    {
+        "id": "post_67b3a2f458d129.22222222",
+        "title": "DRAFT: Investigating Financial Fraud Case",
+        "content": "<p>This is a draft report about an ongoing financial fraud investigation.</p><p>Details are still being gathered and verified before publication.</p>",
+        "date": "2024-01-16 10:00:00",
+        "status": "draft"
+    }
+]
