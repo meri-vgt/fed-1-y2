@@ -1,0 +1,19 @@
+# Ignore server logs and temporary files
+server.log
+*.log
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore temporary directories
+/tmp/
+temp/
+
+# Ignore editor files
+*.swp
+*.swo
+*~
+
+# Ignore any uploaded files (if we add file upload later)
+uploads/
