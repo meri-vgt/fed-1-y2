@@ -9,7 +9,7 @@ require_once 'includes/functions.php';
 $postId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if (!$postId) {
-    header('Location: /');
+    header('Location: ' . getBaseUrl() . '/');
     exit;
 }
 
@@ -17,13 +17,13 @@ if (!$postId) {
 $post = getPostById($postId);
 
 if (!$post) {
-    header('Location: /');
+    header('Location: ' . getBaseUrl() . '/');
     exit;
 }
 
 // Only show published posts (unless coming from admin)
 if ($post['status'] !== 'published' && !isset($_GET['preview'])) {
-    header('Location: /');
+    header('Location: ' . getBaseUrl() . '/');
     exit;
 }
 
@@ -52,11 +52,11 @@ include 'includes/header.php';
     <footer class="post-footer" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div>
-                <a href="/" class="btn btn-secondary">← Terug naar Home</a>
+                <a href="<?php echo getBaseUrl(); ?>/" class="btn btn-secondary">← Terug naar Home</a>
             </div>
             <div style="display: flex; gap: 1rem;">
-                <a href="/admin/edit.php?id=<?php echo $post['id']; ?>" class="btn btn-secondary">Bewerk Artikel</a>
-                <a href="/search.php" class="btn btn-secondary">Meer Verslagen</a>
+                <a href="<?php echo getBaseUrl(); ?>/admin/edit.php?id=<?php echo $post['id']; ?>" class="btn btn-secondary">Bewerk Artikel</a>
+                <a href="<?php echo getBaseUrl(); ?>/search.php" class="btn btn-secondary">Meer Verslagen</a>
             </div>
         </div>
     </footer>
@@ -77,7 +77,7 @@ if (!empty($relatedPosts)):
     
     <div class="posts-grid">
         <?php foreach ($relatedPosts as $relatedPost): ?>
-            <a href="/post.php?id=<?php echo $relatedPost['id']; ?>" class="post-preview">
+            <a href="<?php echo getBaseUrl(); ?>/post.php?id=<?php echo $relatedPost['id']; ?>" class="post-preview">
                 <h3><?php echo htmlspecialchars($relatedPost['title']); ?></h3>
                 <div class="post-meta">
                     <span>📅 <?php echo formatDate($relatedPost['date']); ?></span>

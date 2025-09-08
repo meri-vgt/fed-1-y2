@@ -23,7 +23,7 @@ include 'includes/header.php';
     <p>Zoek naar specifieke zaken, locaties, of criminaliteitstypen in ons archief.</p>
     
     <!-- Enhanced Search Form -->
-    <form action="/search.php" method="GET" style="margin-top: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+    <form action="<?php echo $baseUrl; ?>/search.php" method="GET" style="margin-top: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
         <div style="display: flex; gap: 1rem;">
             <input 
                 type="text" 
@@ -50,7 +50,7 @@ include 'includes/header.php';
             
             <div class="posts-grid">
                 <?php foreach ($results as $post): ?>
-                    <a href="/post.php?id=<?php echo $post['id']; ?>" class="post-preview">
+                    <a href="<?php echo $baseUrl; ?>/post.php?id=<?php echo $post['id']; ?>" class="post-preview">
                         <h3><?php echo htmlspecialchars($post['title']); ?></h3>
                         <div class="post-meta">
                             <span>📅 <?php echo formatDate($post['date']); ?></span>
@@ -86,7 +86,7 @@ include 'includes/header.php';
             </div>
             
             <div style="margin-top: 2rem;">
-                <a href="/" class="btn btn-primary">Bekijk Alle Verslagen</a>
+                <a href="<?php echo $baseUrl; ?>/" class="btn btn-primary">Bekijk Alle Verslagen</a>
             </div>
         </section>
     <?php endif; ?>
@@ -101,7 +101,7 @@ include 'includes/header.php';
                 $popularTerms = ['drugs', 'Amsterdam', 'Rotterdam', 'witwassen', 'mensenhandel', 'cocaïne', 'politie', 'arrestatie'];
                 foreach ($popularTerms as $term):
                 ?>
-                    <a href="/search.php?q=<?php echo urlencode($term); ?>" class="btn btn-secondary">
+                    <a href="<?php echo $baseUrl; ?>/search.php?q=<?php echo urlencode($term); ?>" class="btn btn-secondary">
                         <?php echo htmlspecialchars($term); ?>
                     </a>
                 <?php endforeach; ?>
@@ -117,7 +117,7 @@ include 'includes/header.php';
         
         <div class="posts-grid">
             <?php foreach ($recentPosts as $post): ?>
-                <a href="/post.php?id=<?php echo $post['id']; ?>" class="post-preview">
+                <a href="<?php echo $baseUrl; ?>/post.php?id=<?php echo $post['id']; ?>" class="post-preview">
                     <h3><?php echo htmlspecialchars($post['title']); ?></h3>
                     <div class="post-meta">
                         <span>📅 <?php echo formatDate($post['date']); ?></span>

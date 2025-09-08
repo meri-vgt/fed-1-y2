@@ -78,7 +78,7 @@ include 'includes/header.php';
     <div class="post-content">
         <?php echo $featuredPost['content']; ?>
     </div>
-    <a href="/post.php?id=<?php echo $featuredPost['id']; ?>" class="btn btn-primary mt-2">Lees Volledig Artikel</a>
+    <a href="<?php echo getBaseUrl(); ?>/post.php?id=<?php echo $featuredPost['id']; ?>" class="btn btn-primary mt-2">Lees Volledig Artikel</a>
 </article>
 <?php endif; ?>
 
@@ -89,7 +89,7 @@ include 'includes/header.php';
     
     <div class="posts-grid">
         <?php foreach ($recentPosts as $post): ?>
-            <a href="/post.php?id=<?php echo $post['id']; ?>" class="post-preview">
+            <a href="<?php echo getBaseUrl(); ?>/post.php?id=<?php echo $post['id']; ?>" class="post-preview">
                 <h3><?php echo htmlspecialchars($post['title']); ?></h3>
                 <div class="post-meta">
                     <span>📅 <?php echo formatDate($post['date']); ?></span>
@@ -106,7 +106,7 @@ include 'includes/header.php';
 <div class="glass-card text-center">
     <h2>Geen Verslagen Beschikbaar</h2>
     <p>Er zijn momenteel geen gepubliceerde misdaadverslagen beschikbaar.</p>
-    <a href="/admin/" class="btn btn-primary">Voeg Eerste Verslag Toe</a>
+    <a href="<?php echo getBaseUrl(); ?>/admin/" class="btn btn-primary">Voeg Eerste Verslag Toe</a>
 </div>
 <?php endif; ?>
 
@@ -115,8 +115,8 @@ include 'includes/header.php';
     <h2 style="color: #dc2626; margin-bottom: 1rem;">Blijf Op De Hoogte</h2>
     <p>Volg de laatste ontwikkelingen in misdaadonderzoeken en politieoperaties.</p>
     <div style="margin-top: 2rem;">
-        <a href="/admin/" class="btn btn-primary">Publiceer Een Verslag</a>
-        <a href="/search.php" class="btn btn-secondary">Doorzoek Archief</a>
+        <a href="<?php echo getBaseUrl(); ?>/admin/" class="btn btn-primary">Publiceer Een Verslag</a>
+        <a href="<?php echo getBaseUrl(); ?>/search.php" class="btn btn-secondary">Doorzoek Archief</a>
     </div>
 </section>
 

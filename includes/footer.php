@@ -11,8 +11,8 @@
                 <div class="footer-section">
                     <h4>Navigatie</h4>
                     <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/admin/">Admin</a></li>
+                        <li><a href="<?php echo $baseUrl; ?>/">Home</a></li>
+                        <li><a href="<?php echo $baseUrl; ?>/admin/">Admin</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -26,6 +26,6 @@
         </div>
     </footer>
 
-    <script src="/js/main.js"></script>
+    <script src="<?php echo $baseUrl; ?>/js/main.js"></script>
 </body>
 </html>

@@ -45,9 +45,9 @@ include '../includes/header.php';
 
 <!-- Admin Actions -->
 <section class="admin-actions">
-    <a href="/admin/create.php" class="btn btn-primary">📝 Nieuw Verslag</a>
-    <a href="/" class="btn btn-secondary">🏠 Terug naar Home</a>
-    <a href="/search.php" class="btn btn-secondary">🔍 Zoeken</a>
+    <a href="<?php echo getBaseUrl(); ?>/admin/create.php" class="btn btn-primary">📝 Nieuw Verslag</a>
+    <a href="<?php echo getBaseUrl(); ?>/" class="btn btn-secondary">🏠 Terug naar Home</a>
+    <a href="<?php echo getBaseUrl(); ?>/search.php" class="btn btn-secondary">🔍 Zoeken</a>
 </section>
 
 <!-- Posts Management -->
@@ -83,11 +83,11 @@ include '../includes/header.php';
                             <td><?php echo formatDate($post['date']); ?></td>
                             <td>
                                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                                    <a href="/post.php?id=<?php echo $post['id']; ?><?php echo $post['status'] === 'draft' ? '&preview=1' : ''; ?>" 
+                                    <a href="<?php echo getBaseUrl(); ?>/post.php?id=<?php echo $post['id']; ?><?php echo $post['status'] === 'draft' ? '&preview=1' : ''; ?>" 
                                        class="btn btn-secondary" style="padding: 0.5rem; font-size: 0.8rem;">
                                         👁️ Bekijk
                                     </a>
-                                    <a href="/admin/edit.php?id=<?php echo $post['id']; ?>" 
+                                    <a href="<?php echo getBaseUrl(); ?>/admin/edit.php?id=<?php echo $post['id']; ?>" 
                                        class="btn btn-secondary" style="padding: 0.5rem; font-size: 0.8rem;">
                                         ✏️ Bewerk
                                     </a>
@@ -106,7 +106,7 @@ include '../includes/header.php';
         <div class="text-center" style="padding: 3rem;">
             <h3>Geen verslagen gevonden</h3>
             <p>Er zijn nog geen verslagen aangemaakt.</p>
-            <a href="/admin/create.php" class="btn btn-primary" style="margin-top: 1rem;">
+            <a href="<?php echo getBaseUrl(); ?>/admin/create.php" class="btn btn-primary" style="margin-top: 1rem;">
                 📝 Maak je eerste verslag
             </a>
         </div>

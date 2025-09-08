@@ -13,7 +13,7 @@ $success = false;
 $postId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if (!$postId) {
-    header('Location: /admin/');
+    header('Location: ' . getBaseUrl() . '/admin/');
     exit;
 }
 
@@ -21,7 +21,7 @@ if (!$postId) {
 $post = getPostById($postId);
 
 if (!$post) {
-    header('Location: /admin/');
+    header('Location: ' . getBaseUrl() . '/admin/');
     exit;
 }
 
@@ -58,10 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Redirect based on action
         if (isset($_POST['save_and_view'])) {
-            header('Location: /post.php?id=' . $postId . ($status === 'draft' ? '&preview=1' : ''));
+            header('Location: ' . getBaseUrl() . '/post.php?id=' . $postId . ($status === 'draft' ? '&preview=1' : ''));
             exit;
         } elseif (isset($_POST['save_and_admin'])) {
-            header('Location: /admin/?updated=1');
+            header('Location: ' . getBaseUrl() . '/admin/?updated=1');
             exit;
         }
     }
@@ -78,8 +78,8 @@ include '../includes/header.php';
 
 <!-- Breadcrumb -->
 <nav style="margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-    <a href="/admin/" class="btn btn-secondary">← Admin Dashboard</a>
-    <a href="/post.php?id=<?php echo $post['id']; ?><?php echo $post['status'] === 'draft' ? '&preview=1' : ''; ?>" class="btn btn-secondary">👁️ Bekijk Verslag</a>
+    <a href="<?php echo getBaseUrl(); ?>/admin/" class="btn btn-secondary">← Admin Dashboard</a>
+    <a href="<?php echo getBaseUrl(); ?>/post.php?id=<?php echo $post['id']; ?><?php echo $post['status'] === 'draft' ? '&preview=1' : ''; ?>" class="btn btn-secondary">👁️ Bekijk Verslag</a>
 </nav>
 
 <!-- Success Message -->
@@ -102,7 +102,7 @@ include '../includes/header.php';
         </div>
     <?php endif; ?>
     
-    <form action="/admin/edit.php?id=<?php echo $postId; ?>" method="POST" id="edit-form" onsubmit="return validateForm('edit-form')">
+    <form action="<?php echo getBaseUrl(); ?>/admin/edit.php?id=<?php echo $postId; ?>" method="POST" id="edit-form" onsubmit="return validateForm('edit-form')">
         <div class="form-group">
             <label for="title" class="form-label">Titel van het Verslag</label>
             <input 
@@ -176,7 +176,7 @@ include '../includes/header.php';
             <button type="submit" name="save_and_admin" class="btn btn-secondary">
                 💾 Opslaan & Terug naar Admin
             </button>
-            <a href="/admin/" class="btn btn-secondary">
+            <a href="<?php echo getBaseUrl(); ?>/admin/" class="btn btn-secondary">
                 ❌ Annuleren
             </a>
         </div>

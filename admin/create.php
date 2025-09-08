@@ -39,9 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success = true;
             // Redirect to admin or post view
             if ($status === 'published') {
-                header('Location: /post.php?id=' . $newPost['id']);
+                header('Location: ' . getBaseUrl() . '/post.php?id=' . $newPost['id']);
             } else {
-                header('Location: /admin/?created=1');
+                header('Location: ' . getBaseUrl() . '/admin/?created=1');
             }
             exit;
         } else {
@@ -61,7 +61,7 @@ include '../includes/header.php';
 
 <!-- Breadcrumb -->
 <nav style="margin-bottom: 2rem;">
-    <a href="/admin/" class="btn btn-secondary">← Terug naar Admin</a>
+    <a href="<?php echo getBaseUrl(); ?>/admin/" class="btn btn-secondary">← Terug naar Admin</a>
 </nav>
 
 <!-- Create Post Form -->
@@ -77,7 +77,7 @@ include '../includes/header.php';
         </div>
     <?php endif; ?>
     
-    <form action="/admin/create.php" method="POST" id="create-form" onsubmit="return validateForm('create-form')">
+    <form action="<?php echo getBaseUrl(); ?>/admin/create.php" method="POST" id="create-form" onsubmit="return validateForm('create-form')">
         <div class="form-group">
             <label for="title" class="form-label">Titel van het Verslag</label>
             <input 
@@ -143,7 +143,7 @@ include '../includes/header.php';
             <button type="submit" class="btn btn-primary">
                 💾 Verslag Opslaan
             </button>
-            <a href="/admin/" class="btn btn-secondary">
+            <a href="<?php echo getBaseUrl(); ?>/admin/" class="btn btn-secondary">
                 ❌ Annuleren
             </a>
         </div>

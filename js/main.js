@@ -149,7 +149,8 @@ function confirmDelete(postId, postTitle) {
     const confirmed = confirm(`Weet je zeker dat je "${postTitle}" wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.`);
     
     if (confirmed) {
-        window.location.href = `/admin/delete.php?id=${postId}`;
+        const base = (window.APP_BASE_URL || '').replace(/\/$/, '');
+        window.location.href = `${base}/admin/delete.php?id=${postId}`;
     }
     
     return false;
@@ -223,7 +224,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const newStatus = currentStatus === 'published' ? 'draft' : 'published';
             
             // Make AJAX request to update status
-            fetch('/admin/toggle-status.php', {
+            const base = (window.APP_BASE_URL || '').replace(/\/$/, '');
+            fetch(`${base}/admin/toggle-status.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

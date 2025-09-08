@@ -9,7 +9,7 @@ require_once '../includes/functions.php';
 $postId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if (!$postId) {
-    header('Location: /admin/');
+    header('Location: ' . getBaseUrl() . '/admin/');
     exit;
 }
 
@@ -17,14 +17,14 @@ if (!$postId) {
 $post = getPostById($postId);
 
 if (!$post) {
-    header('Location: /admin/');
+    header('Location: ' . getBaseUrl() . '/admin/');
     exit;
 }
 
 // Handle the deletion
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete'])) {
     deletePost($postId);
-    header('Location: /admin/?deleted=1');
+    header('Location: ' . getBaseUrl() . '/admin/?deleted=1');
     exit;
 }
 
@@ -41,7 +41,7 @@ include '../includes/header.php';
 
 <!-- Breadcrumb -->
 <nav style="margin-bottom: 2rem;">
-    <a href="/admin/" class="btn btn-secondary">← Terug naar Admin</a>
+    <a href="<?php echo getBaseUrl(); ?>/admin/" class="btn btn-secondary">← Terug naar Admin</a>
 </nav>
 
 <!-- Confirmation Form -->
@@ -79,12 +79,12 @@ include '../includes/header.php';
         </ul>
     </div>
     
-    <form action="/admin/delete.php?id=<?php echo $postId; ?>" method="POST" style="text-align: center;">
+    <form action="<?php echo getBaseUrl(); ?>/admin/delete.php?id=<?php echo $postId; ?>" method="POST" style="text-align: center;">
         <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
             <button type="submit" name="confirm_delete" class="btn btn-danger" style="font-size: 1.1rem; padding: 1rem 2rem;">
                 🗑️ Ja, Verwijder Definitief
             </button>
-            <a href="/admin/" class="btn btn-secondary" style="font-size: 1.1rem; padding: 1rem 2rem;">
+            <a href="<?php echo getBaseUrl(); ?>/admin/" class="btn btn-secondary" style="font-size: 1.1rem; padding: 1rem 2rem;">
                 ❌ Nee, Annuleren
             </a>
         </div>
@@ -104,7 +104,7 @@ include '../includes/header.php';
         <div style="background: rgba(249, 115, 22, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(249, 115, 22, 0.2);">
             <h4 style="color: #f97316; margin-bottom: 1rem;">📝 Bewerken</h4>
             <p style="margin-bottom: 1rem;">Pas de inhoud aan in plaats van het volledig te verwijderen.</p>
-            <a href="/admin/edit.php?id=<?php echo $postId; ?>" class="btn btn-secondary">
+            <a href="<?php echo getBaseUrl(); ?>/admin/edit.php?id=<?php echo $postId; ?>" class="btn btn-secondary">
                 Bewerk dit Verslag
             </a>
         </div>
@@ -113,7 +113,7 @@ include '../includes/header.php';
             <h4 style="color: #f97316; margin-bottom: 1rem;">👁️ Concept Maken</h4>
             <p style="margin-bottom: 1rem;">Zet het verslag op 'concept' zodat het niet zichtbaar is voor bezoekers.</p>
             <?php if ($post['status'] === 'published'): ?>
-                <form action="/admin/edit.php?id=<?php echo $postId; ?>" method="POST" style="display: inline;">
+                <form action="<?php echo getBaseUrl(); ?>/admin/edit.php?id=<?php echo $postId; ?>" method="POST" style="display: inline;">
                     <input type="hidden" name="title" value="<?php echo htmlspecialchars($post['title']); ?>">
                     <input type="hidden" name="content" value="<?php echo htmlspecialchars($post['content']); ?>">
                     <input type="hidden" name="status" value="draft">
@@ -132,19 +132,20 @@ include '../includes/header.php';
 // Add extra confirmation for delete action
 document.addEventListener('DOMContentLoaded', function() {
     const deleteForm = document.querySelector('form[action*="delete.php"]');
-    const deleteButton = deleteForm.querySelector('button[name="confirm_delete"]');
+    if (!deleteForm) return;
     
-    deleteButton.addEventListener('click', function(e) {
+    deleteForm.addEventListener('submit', function(e) {
         const finalConfirm = confirm('LAATSTE WAARSCHUWING: Weet je 100% zeker dat je "<?php echo addslashes($post['title']); ?>" wilt verwijderen? Deze actie kan NIET ongedaan worden gemaakt!');
-        
         if (!finalConfirm) {
             e.preventDefault();
-            return false;
+            return;
         }
-        
-        // Add visual feedback
-        this.textContent = '⏳ Bezig met verwijderen...';
-        this.disabled = true;
+        const deleteButton = this.querySelector('button[name="confirm_delete"]');
+        if (deleteButton) {
+            deleteButton.textContent = '⏳ Bezig met verwijderen...';
+            // Defer disabling to next tick to avoid interfering with POST name submission
+            setTimeout(() => { deleteButton.disabled = true; }, 0);
+        }
     });
 });
 </script>

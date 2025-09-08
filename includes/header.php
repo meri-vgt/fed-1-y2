@@ -1,13 +1,25 @@
+<?php
+    // Determine base URL dynamically so assets work from subfolders (e.g., /fed-1-y2)
+    $scriptName = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+    $dirName = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+    $baseUrl = $dirName;
+    // If we are in a nested directory like /fed-1-y2/admin, step up to project root
+    if (preg_match('#/admin$#', $baseUrl)) {
+        $baseUrl = rtrim(preg_replace('#/admin$#', '', $baseUrl), '/');
+    }
+    if ($baseUrl === '') { $baseUrl = '/'; }
+?>
 <!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($pageTitle) ? $pageTitle . ' - ' : ''; ?>Criminal Minds</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>window.APP_BASE_URL = <?php echo json_encode($baseUrl); ?>;</script>
 </head>
 <body>
     <!-- Loading Screen -->
@@ -23,13 +35,13 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
-                <a href="/">Criminal Minds</a>
+                <a href="<?php echo $baseUrl; ?>/">Criminal Minds</a>
             </div>
             <div class="nav-links">
-                <a href="/" class="nav-link">Home</a>
-                <a href="/admin/" class="nav-link">Admin</a>
+                <a href="<?php echo $baseUrl; ?>/" class="nav-link">Home</a>
+                <a href="<?php echo $baseUrl; ?>/admin/" class="nav-link">Admin</a>
                 <div class="search-container">
-                    <form action="/search.php" method="GET" class="search-form">
+                    <form action="<?php echo $baseUrl; ?>/search.php" method="GET" class="search-form">
                         <input type="text" name="q" placeholder="Zoek in misdaadverslagen..." class="search-input" value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
                         <button type="submit" class="search-btn">🔍</button>
                     </form>

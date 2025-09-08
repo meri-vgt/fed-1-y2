@@ -7,6 +7,20 @@
 define('POSTS_FILE', __DIR__ . '/../data/posts.json');
 
 /**
+ * Compute the base URL for the app, so links work under subfolders (e.g., /fed-1-y2)
+ */
+function getBaseUrl() {
+    $scriptName = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+    $dirName = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+    $baseUrl = $dirName;
+    if (preg_match('#/admin$#', $baseUrl)) {
+        $baseUrl = rtrim(preg_replace('#/admin$#', '', $baseUrl), '/');
+    }
+    if ($baseUrl === '') { $baseUrl = '/'; }
+    return $baseUrl;
+}
+
+/**
  * Get all posts from JSON file
  */
 function getAllPosts() {
@@ -15,7 +29,33 @@ function getAllPosts() {
     }
     
     $content = file_get_contents(POSTS_FILE);
-    return json_decode($content, true) ?: [];
+    $posts = json_decode($content, true) ?: [];
+    
+    // Normalize IDs if there are duplicates or non-numeric values
+    $changed = false;
+    $seenIds = [];
+    $maxId = 0;
+    foreach ($posts as $post) {
+        $numericId = is_numeric($post['id']) ? (int)$post['id'] : 0;
+        if ($numericId > $maxId) {
+            $maxId = $numericId;
+        }
+    }
+    foreach ($posts as &$postRef) {
+        $numericId = is_numeric($postRef['id']) ? (int)$postRef['id'] : 0;
+        if ($numericId <= 0 || isset($seenIds[$numericId])) {
+            $maxId += 1;
+            $postRef['id'] = $maxId;
+            $changed = true;
+        }
+        $seenIds[(int)$postRef['id']] = true;
+    }
+    unset($postRef);
+    if ($changed) {
+        savePosts($posts);
+    }
+    
+    return $posts;
 }
 
 /**
@@ -54,8 +94,17 @@ function getPostById($id) {
 function createPost($title, $content, $status = 'draft') {
     $posts = getAllPosts();
     
+    // Generate unique incremental ID
+    $maxId = 0;
+    foreach ($posts as $p) {
+        if (isset($p['id']) && is_numeric($p['id'])) {
+            $maxId = max($maxId, (int)$p['id']);
+        }
+    }
+    $newId = $maxId + 1;
+
     $newPost = [
-        'id' => time(), // Simple ID generation
+        'id' => $newId,
         'title' => $title,
         'content' => $content,
         'status' => $status,
