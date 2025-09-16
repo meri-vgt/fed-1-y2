@@ -12,12 +12,14 @@
                     <h4>Navigatie</h4>
                     <ul>
                         <li><a href="<?php echo $baseUrl; ?>/">Home</a></li>
-                        <li><a href="<?php echo $baseUrl; ?>/admin/">Admin</a></li>
+                        <li><a href="<?php echo $baseUrl; ?>/?page=admin">Admin</a></li>
+                        <li><a href="<?php echo $baseUrl; ?>/?page=search">Zoeken</a></li>
+                        <li><a href="<?php echo $baseUrl; ?>/?page=disclaimer">Disclaimer & Veiligheid</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Disclaimer</h4>
-                    <p>Alle verhalen zijn fictief en dienen alleen voor educatieve doeleinden.</p>
+                    <p>Lees onze <a href="<?php echo $baseUrl; ?>/?page=disclaimer">veiligheidsregels en disclaimer</a>.</p>
                 </div>
             </div>
         </div>

@@ -1,0 +1,15 @@
+# Enable rewrite engine
+RewriteEngine On
+
+# Route all requests to index.php except for existing files and directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Handle specific routes
+RewriteRule ^post/([0-9]+)/?$ index.php?page=post&id=$1 [QSA,L]
+RewriteRule ^search/?$ index.php?page=search [QSA,L]
+RewriteRule ^create/?$ index.php?page=create [QSA,L]
+RewriteRule ^admin/?$ index.php?page=admin [QSA,L]
+RewriteRule ^admin/create/?$ index.php?page=admin-create [QSA,L]
+RewriteRule ^disclaimer/?$ index.php?page=disclaimer [QSA,L]

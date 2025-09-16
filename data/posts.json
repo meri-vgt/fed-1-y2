@@ -1,26 +1,46 @@
 [
     {
-        "id": 1757315133,
+        "id": 1,
+        "title": "L. van der W. (17) gepakt in Vogelwaarde tijdens het kiefen",
+        "content": "Jo maat, er is zoeen cooked ass guy opgepakt in Vogelwaarde tijdens een grote deal.\r\n\r\nJo maat, dit is een edit.",
+        "status": "published",
+        "author": "Reklezz",
+        "date": "2025-09-15 10:09:31",
+        "created_at": "2025-09-08 12:48:02",
+        "featured": 1,
+        "updated_at": 1757927595
+    },
+    {
+        "id": 4,
+        "title": "H. A. F. opgepakt voor het verkopen van \"Mario 1UP MMC\"",
+        "content": "Hoi allemaal, er is iemand op gepakt in middelburg voor een of andere zieke Mario strain. Ik was gewoon op mijn nintendo switch aan het spelen toen ik het ineens zag gebeuren. Nou dit vond ik wel een beetje apart hoor. Maar ik ga verder terraria spelen doei",
+        "status": "published",
+        "author": "tyler",
+        "date": "2025-09-10 09:26:28",
+        "created_at": "2025-09-10 09:26:28",
+        "featured": 0,
+        "updated_at": "2025-09-10 09:26:28"
+    },
+    {
+        "id": 2,
         "title": "BREAKING: 100 kilo 6mmc gesmokkeld uit Deventer",
-        "content": "goedemiddag beste mensen, blogger sjoak hier. \r\ner is afgelopen zondag 100 kilo 6mmc gesmokkeld uut Deevntr, ik vermoed dat het mien neef was maar ik kan het beter niet doorvertellen\r\n\r\nwat een kearl",
+        "content": "goedemiddag beste mensen, blogger sjoak hier. \ner is afgelopen zondag 100 kilo 6mmc gesmokkeld uut Deevntr, ik vermoed dat het mien neef was maar ik kan het beter niet doorvertellen\n\nwat een kearl",
         "status": "published",
+        "author": "blogger_sjoak1993",
         "date": "2025-09-08 09:45:50",
-        "created_at": 1757317550
+        "created_at": "2025-09-08 09:45:50",
+        "featured": 0,
+        "updated_at": "2025-09-08 09:45:50"
     },
     {
-        "id": 1757315132,
-        "title": "halloe",
-        "content": "diet ies ien test",
-        "status": "published",
-        "date": "2025-09-08 09:43:44",
-        "created_at": 1757317424
-    },
-    {
-        "id": 1757315131,
+        "id": 3,
         "title": "Grote Drugsbust in Amsterdam: 500kg Coca\u00efne Onderschept",
         "content": "<p>In een grootschalige operatie heeft de politie vandaag 500 kilogram coca\u00efne onderschept in de haven van Amsterdam. De drugs waren verstopt in een container met bananen uit Zuid-Amerika.<\/p>\n\n<p>De operatie, codenaam \"Witte Sneeuw\", was het resultaat van maanden onderzoek door de Nationale Politie in samenwerking met internationale partners. Drie verdachten zijn aangehouden.<\/p>\n\n<p><strong>Details van de operatie:<\/strong><\/p>\n<ul>\n<li>Straatwaarde: \u20ac37,5 miljoen<\/li>\n<li>Container herkomst: Colombia<\/li>\n<li>Arrestaties: 3 personen<\/li>\n<li>Onderzoeksduur: 8 maanden<\/li>\n<\/ul>\n\n<p>Dit is een van de grootste drugsvangsten van dit jaar in Nederland. De politie verwacht dat deze inbeslagname een significante impact zal hebben op de lokale drugshandel.<\/p>",
         "status": "published",
+        "author": "Ronald Hogerlanden",
         "date": "2025-09-08 07:05:29",
-        "created_at": 1757315129
+        "created_at": "2025-09-08 07:05:29",
+        "featured": 0,
+        "updated_at": "2025-09-08 07:05:29"
     }
 ]

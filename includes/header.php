@@ -14,7 +14,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($pageTitle) ? $pageTitle . ' - ' : ''; ?>Criminal Minds</title>
+    <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) . ' - ' : ''; ?>Criminal Minds</title>
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,9 +39,11 @@
             </div>
             <div class="nav-links">
                 <a href="<?php echo $baseUrl; ?>/" class="nav-link">Home</a>
-                <a href="<?php echo $baseUrl; ?>/admin/" class="nav-link">Admin</a>
+                <a href="<?php echo $baseUrl; ?>/?page=admin" class="nav-link">Admin</a>
+                <a href="<?php echo $baseUrl; ?>/?page=search" class="nav-link">Zoeken</a>
                 <div class="search-container">
-                    <form action="<?php echo $baseUrl; ?>/search.php" method="GET" class="search-form">
+                    <form action="<?php echo $baseUrl; ?>/" method="GET" class="search-form">
+                        <input type="hidden" name="page" value="search">
                         <input type="text" name="q" placeholder="Zoek in misdaadverslagen..." class="search-input" value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
                         <button type="submit" class="search-btn">🔍</button>
                     </form>
