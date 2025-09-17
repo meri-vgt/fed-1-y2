@@ -389,7 +389,8 @@ if ($page === 'post') {
         
         // Update post if no errors
         if (empty($errors)) {
-            if (updatePost($postId, $title, $content, $status, $author)) {
+            $updateResult = updatePost($postId, $title, $content, $status, $author);
+            if ($updateResult !== false) {
                 $success = true;
                 // Redirect to view the updated post
                 header('Location: ' . getBaseUrl() . '/?page=post&id=' . $postId . ($status === 'draft' ? '&preview=1' : ''));
@@ -451,14 +452,36 @@ if ($page === 'post') {
 
             <div class="form-group">
                 <label for="content" class="form-label">Verslag Inhoud</label>
+                <!-- Text Formatting Buttons -->
+                <div style="margin-bottom: 0.5rem;">
+                    <button type="button" class="btn btn-secondary" data-format="bold" title="Vet (Ctrl+B)" style="padding: 0.25rem 0.5rem; font-size: 0.9rem;">B</button>
+                    <button type="button" class="btn btn-secondary" data-format="italic" title="Cursief (Ctrl+I)" style="padding: 0.25rem 0.5rem; font-size: 0.9rem; font-style: italic;">I</button>
+                    <button type="button" class="btn btn-secondary" data-format="underline" title="Onderstrepen (Ctrl+U)" style="padding: 0.25rem 0.5rem; font-size: 0.9rem; text-decoration: underline;">U</button>
+                    <button type="button" class="btn btn-secondary" data-format="strikethrough" title="Doorhalen (Ctrl+S)" style="padding: 0.25rem 0.5rem; font-size: 0.9rem; text-decoration: line-through;">S</button>
+                </div>
                 <textarea 
                     id="content" 
                     name="content" 
                     class="form-textarea" 
-                    placeholder="Schrijf hier het volledige misdaadverslag... Je kunt HTML gebruiken voor opmaak zoals <p>, <strong>, <ul>, <li>, etc."
+                    placeholder="Schrijf hier het volledige misdaadverslag... Je kunt HTML gebruiken voor opmaak zoals <p>, <strong>, <em>, <u>, <s>, <ul>, <li>, etc. Gebruik ook de knoppen hierboven of sneltoetsen: Ctrl+B (vet), Ctrl+I (cursief), Ctrl+U (onderstrepen), Ctrl+S (doorhalen)"
                     required
                     style="min-height: 400px;"
-                ><?php echo isset($_POST['content']) ? htmlspecialchars($_POST['content']) : htmlspecialchars($post['content']); ?></textarea>
+                ><?php 
+                if (isset($_POST['content'])) {
+                    echo htmlspecialchars($_POST['content']);
+                } else {
+                    // Show content in editor with formatting tags but without structural tags
+                    $editableContent = $post['content'];
+                    // Remove structural HTML tags but preserve formatting tags
+                    $editableContent = str_replace(['<p>', '</p>', '<div>', '</div>'], '', $editableContent);
+                    $editableContent = str_replace(['<br>', '<br/>', '<br />'], "\n", $editableContent);
+                    // Normalize line endings
+                    $editableContent = str_replace(["\r\n", "\r"], "\n", $editableContent);
+                    // Decode HTML entities
+                    $editableContent = html_entity_decode($editableContent);
+                    echo htmlspecialchars($editableContent);
+                }
+                ?></textarea>
             </div>
 
             <div class="form-group">
@@ -582,11 +605,18 @@ if ($page === 'post') {
 
             <div class="form-group">
                 <label for="content" class="form-label">Verslag Inhoud</label>
+                <!-- Text Formatting Buttons -->
+                <div style="margin-bottom: 0.5rem;">
+                    <button type="button" class="btn btn-secondary" data-format="bold" title="Vet (Ctrl+B)" style="padding: 0.25rem 0.5rem; font-size: 0.9rem;">B</button>
+                    <button type="button" class="btn btn-secondary" data-format="italic" title="Cursief (Ctrl+I)" style="padding: 0.25rem 0.5rem; font-size: 0.9rem; font-style: italic;">I</button>
+                    <button type="button" class="btn btn-secondary" data-format="underline" title="Onderstrepen (Ctrl+U)" style="padding: 0.25rem 0.5rem; font-size: 0.9rem; text-decoration: underline;">U</button>
+                    <button type="button" class="btn btn-secondary" data-format="strikethrough" title="Doorhalen (Ctrl+S)" style="padding: 0.25rem 0.5rem; font-size: 0.9rem; text-decoration: line-through;">S</button>
+                </div>
                 <textarea 
                     id="content" 
                     name="content" 
                     class="form-textarea" 
-                    placeholder="Schrijf hier het volledige misdaadverslag... Je kunt HTML gebruiken voor opmaak zoals <p>, <strong>, <ul>, <li>, etc."
+                    placeholder="Schrijf hier het volledige misdaadverslag... Je kunt HTML gebruiken voor opmaak zoals <p>, <strong>, <em>, <u>, <s>, <ul>, <li>, etc. Gebruik ook de knoppen hierboven of sneltoetsen: Ctrl+B (vet), Ctrl+I (cursief), Ctrl+U (onderstrepen), Ctrl+S (doorhalen)"
                     required
                     style="min-height: 400px;"
                 ><?php echo isset($_POST['content']) ? htmlspecialchars($_POST['content']) : ''; ?></textarea>
@@ -725,11 +755,18 @@ if ($page === 'post') {
             
             <div class="form-group">
                 <label for="content" class="form-label">Verslag Inhoud</label>
+                <!-- Text Formatting Buttons -->
+                <div style="margin-bottom: 0.5rem;">
+                    <button type="button" class="btn btn-secondary" data-format="bold" title="Vet (Ctrl+B)" style="padding: 0.25rem 0.5rem; font-size: 0.9rem;">B</button>
+                    <button type="button" class="btn btn-secondary" data-format="italic" title="Cursief (Ctrl+I)" style="padding: 0.25rem 0.5rem; font-size: 0.9rem; font-style: italic;">I</button>
+                    <button type="button" class="btn btn-secondary" data-format="underline" title="Onderstrepen (Ctrl+U)" style="padding: 0.25rem 0.5rem; font-size: 0.9rem; text-decoration: underline;">U</button>
+                    <button type="button" class="btn btn-secondary" data-format="strikethrough" title="Doorhalen (Ctrl+S)" style="padding: 0.25rem 0.5rem; font-size: 0.9rem; text-decoration: line-through;">S</button>
+                </div>
                 <textarea 
                     id="content" 
                     name="content" 
                     class="form-textarea" 
-                    placeholder="Schrijf hier het volledige misdaadverslag... Je kunt HTML gebruiken voor opmaak zoals <p>, <strong>, <ul>, <li>, etc."
+                    placeholder="Schrijf hier het volledige misdaadverslag... Je kunt HTML gebruiken voor opmaak zoals <p>, <strong>, <em>, <u>, <s>, <ul>, <li>, etc. Gebruik ook de knoppen hierboven of sneltoetsen: Ctrl+B (vet), Ctrl+I (cursief), Ctrl+U (onderstrepen), Ctrl+S (doorhalen)"
                     required
                     style="min-height: 400px;"
                 ><?php echo isset($_POST['content']) ? htmlspecialchars($_POST['content']) : ''; ?></textarea>
@@ -744,10 +781,19 @@ if ($page === 'post') {
                             <strong>Vet:</strong> &lt;strong&gt;tekst&lt;/strong&gt;
                         </div>
                         <div>
+                            <strong>Cursief:</strong> &lt;em&gt;tekst&lt;/em&gt;
+                        </div>
+                        <div>
+                            <strong>Onderstrepen:</strong> &lt;u&gt;tekst&lt;/u&gt;
+                        </div>
+                        <div>
+                            <strong>Doorhalen:</strong> &lt;s&gt;tekst&lt;/s&gt;
+                        </div>
+                        <div>
                             <strong>Lijst:</strong> &lt;ul&gt;&lt;li&gt;item&lt;/li&gt;&lt;/ul&gt;
                         </div>
                         <div>
-                            <strong>Sneltoets:</strong> Ctrl+B (vet), Ctrl+I (cursief)
+                            <strong>Sneltoetsen:</strong> Ctrl+B (vet), Ctrl+I (cursief), Ctrl+U (onderstrepen), Ctrl+S (doorhalen)
                         </div>
                     </div>
                 </div>

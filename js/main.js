@@ -83,6 +83,7 @@ function validateForm(formId) {
     
     const title = form.querySelector('input[name="title"]');
     const content = form.querySelector('textarea[name="content"]');
+    const author = form.querySelector('input[name="author"]');
     
     let isValid = true;
     
@@ -100,6 +101,13 @@ function validateForm(formId) {
     if (content && content.value.trim().length < 10) {
         content.classList.add('error');
         showNotification('Inhoud moet minimaal 10 karakters bevatten', 'error');
+        isValid = false;
+    }
+    
+    // Validate author
+    if (author && author.value.trim().length < 1) {
+        author.classList.add('error');
+        showNotification('Auteur is verplicht', 'error');
         isValid = false;
     }
     

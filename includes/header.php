@@ -20,6 +20,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script>window.APP_BASE_URL = <?php echo json_encode($baseUrl); ?>;</script>
+    <script src="<?php echo $baseUrl; ?>/js/main.js" defer></script>
+    <script src="<?php echo $baseUrl; ?>/js/text-editor.js" defer></script>
 </head>
 <body>
     <!-- Loading Screen -->
