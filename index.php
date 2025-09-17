@@ -133,7 +133,7 @@ if ($page === 'post') {
         <header class="post-header" style="margin-bottom: 2rem;">
             <h1 class="post-title"><?php echo htmlspecialchars($post['title']); ?></h1>
             <div class="post-meta" style="font-size: 1rem;">
-                <span>📅 <?php echo formatDate($post['date']); ?></span>
+                <span>📅 <?php echo formatDate($post['created_at']); ?></span>
                 <span>✍️ <?php echo htmlspecialchars($post['author'] ?? 'Onbekend'); ?></span>
                 <span>🔍 Misdaadverslag</span>
                 <?php if ($post['status'] === 'draft'): ?>

@@ -6,6 +6,12 @@
 // Data file path
 define('POSTS_FILE', __DIR__ . '/../data/posts.json');
 
+// Try to include database configuration if it exists
+$dbConfigFile = __DIR__ . '/db_config.php';
+if (file_exists($dbConfigFile)) {
+    include_once $dbConfigFile;
+}
+
 /**
  * Compute the base URL for the app, so links work under subfolders (e.g., /fed-1-y2)
  */
@@ -21,9 +27,87 @@ function getBaseUrl() {
 }
 
 /**
- * Get all posts from JSON file
+ * Check if database is available and working
+ */
+function isDatabaseWorking() {
+    // Check if db_config.php functions exist
+    if (!function_exists('getDatabaseConnection') || !function_exists('isDatabaseAvailable')) {
+        return false;
+    }
+    
+    // Check if database is available
+    if (!isDatabaseAvailable()) {
+        return false;
+    }
+    
+    // Test a simple query
+    try {
+        $db = getDatabaseConnection();
+        if ($db) {
+            if ($db instanceof PDO) {
+                $stmt = $db->query("SELECT 1");
+                return $stmt !== false;
+            } else {
+                $result = $db->query("SELECT 1");
+                return $result !== false;
+            }
+        }
+    } catch (Exception $e) {
+        // Database test failed
+        error_log("Database test failed: " . $e->getMessage());
+    }
+    
+    return false;
+}
+
+/**
+ * Get all posts from database (if available) or JSON file
  */
 function getAllPosts() {
+    // Try database first if available
+    if (isDatabaseWorking()) {
+        try {
+            $db = getDatabaseConnection();
+            if ($db) {
+                if ($db instanceof PDO) {
+                    $stmt = $db->query("SELECT * FROM posts ORDER BY date DESC");
+                    if ($stmt) {
+                        $posts = [];
+                        while ($row = $stmt->fetch()) {
+                            // Ensure all required fields exist and map correctly
+                            $row['author'] = $row['author'] ?? 'Onbekend';
+                            $row['featured'] = isset($row['featured']) ? (bool)$row['featured'] : false;
+                            // Map database columns to expected format
+                            $row['created_at'] = $row['created_at'] ?? $row['date'];
+                            $row['date'] = $row['date'] ?? $row['created_at'];
+                            $posts[] = $row;
+                        }
+                        return $posts;
+                    }
+                } else {
+                    // MySQLi
+                    $result = $db->query("SELECT * FROM posts ORDER BY date DESC");
+                    if ($result) {
+                        $posts = [];
+                        while ($row = $result->fetch_assoc()) {
+                            // Ensure all required fields exist and map correctly
+                            $row['author'] = $row['author'] ?? 'Onbekend';
+                            $row['featured'] = isset($row['featured']) ? (bool)$row['featured'] : false;
+                            // Map database columns to expected format
+                            $row['created_at'] = $row['created_at'] ?? $row['date'];
+                            $row['date'] = $row['date'] ?? $row['created_at'];
+                            $posts[] = $row;
+                        }
+                        return $posts;
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Database getAllPosts failed: " . $e->getMessage());
+        }
+    }
+    
+    // Fallback to JSON
     if (!file_exists(POSTS_FILE)) {
         return [];
     }
@@ -61,6 +145,12 @@ function getAllPosts() {
             $postRef['featured'] = false;
             $changed = true;
         }
+        
+        // Ensure created_at exists
+        if (!isset($postRef['created_at'])) {
+            $postRef['created_at'] = $postRef['date'] ?? date('Y-m-d H:i:s');
+            $changed = true;
+        }
     }
     unset($postRef);
     if ($changed) {
@@ -81,6 +171,42 @@ function savePosts($posts) {
  * Get published posts only
  */
 function getPublishedPosts() {
+    // Try database first if available
+    if (isDatabaseWorking()) {
+        try {
+            $db = getDatabaseConnection();
+            if ($db) {
+                if ($db instanceof PDO) {
+                    $stmt = $db->query("SELECT * FROM posts WHERE status = 'published' ORDER BY date DESC");
+                    if ($stmt) {
+                        $posts = [];
+                        while ($row = $stmt->fetch()) {
+                            $row['author'] = $row['author'] ?? 'Onbekend';
+                            $row['featured'] = isset($row['featured']) ? (bool)$row['featured'] : false;
+                            $posts[] = $row;
+                        }
+                        return $posts;
+                    }
+                } else {
+                    // MySQLi
+                    $result = $db->query("SELECT * FROM posts WHERE status = 'published' ORDER BY date DESC");
+                    if ($result) {
+                        $posts = [];
+                        while ($row = $result->fetch_assoc()) {
+                            $row['author'] = $row['author'] ?? 'Onbekend';
+                            $row['featured'] = isset($row['featured']) ? (bool)$row['featured'] : false;
+                            $posts[] = $row;
+                        }
+                        return $posts;
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Database getPublishedPosts failed: " . $e->getMessage());
+        }
+    }
+    
+    // Fallback to JSON
     $posts = getAllPosts();
     return array_filter($posts, function($post) {
         return $post['status'] === 'published';
@@ -91,6 +217,34 @@ function getPublishedPosts() {
  * Get the current featured post (first featured among published)
  */
 function getFeaturedPost() {
+    // Try database first if available
+    if (isDatabaseWorking()) {
+        try {
+            $db = getDatabaseConnection();
+            if ($db) {
+                if ($db instanceof PDO) {
+                    $stmt = $db->query("SELECT * FROM posts WHERE status = 'published' AND featured = 1 ORDER BY date DESC LIMIT 1");
+                    if ($stmt && $row = $stmt->fetch()) {
+                        $row['author'] = $row['author'] ?? 'Onbekend';
+                        $row['featured'] = isset($row['featured']) ? (bool)$row['featured'] : false;
+                        return $row;
+                    }
+                } else {
+                    // MySQLi
+                    $result = $db->query("SELECT * FROM posts WHERE status = 'published' AND featured = 1 ORDER BY date DESC LIMIT 1");
+                    if ($result && $row = $result->fetch_assoc()) {
+                        $row['author'] = $row['author'] ?? 'Onbekend';
+                        $row['featured'] = isset($row['featured']) ? (bool)$row['featured'] : false;
+                        return $row;
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Database getFeaturedPost failed: " . $e->getMessage());
+        }
+    }
+    
+    // Fallback to JSON
     $posts = getPublishedPosts();
     foreach ($posts as $post) {
         if (!empty($post['featured'])) {
@@ -104,18 +258,77 @@ function getFeaturedPost() {
  * Set a post as featured; unfeature all others
  */
 function setFeaturedPost($id) {
+    // Try database first if available
+    if (isDatabaseWorking()) {
+        try {
+            $db = getDatabaseConnection();
+            if ($db) {
+                if ($db instanceof PDO) {
+                    // First unfeature all posts
+                    $db->query("UPDATE posts SET featured = 0");
+                    // Then feature the selected post
+                    $stmt = $db->prepare("UPDATE posts SET featured = 1 WHERE id = ?");
+                    return $stmt->execute([$id]);
+                } else {
+                    // MySQLi
+                    // First unfeature all posts
+                    $db->query("UPDATE posts SET featured = 0");
+                    // Then feature the selected post
+                    $stmt = $db->prepare("UPDATE posts SET featured = 1 WHERE id = ?");
+                    return $stmt->execute([$id]);
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Database setFeaturedPost failed: " . $e->getMessage());
+        }
+    }
+    
+    // Fallback to JSON
     $posts = getAllPosts();
     foreach ($posts as &$post) {
         $post['featured'] = ($post['id'] == $id);
     }
     unset($post);
-    savePosts($posts);
+    return savePosts($posts);
 }
 
 /**
  * Get post by ID
  */
 function getPostById($id) {
+    // Try database first if available
+    if (isDatabaseWorking()) {
+        try {
+            $db = getDatabaseConnection();
+            if ($db) {
+                if ($db instanceof PDO) {
+                    $stmt = $db->prepare("SELECT * FROM posts WHERE id = ?");
+                    $stmt->execute([$id]);
+                    $result = $stmt->fetch();
+                    if ($result) {
+                        $result['author'] = $result['author'] ?? 'Onbekend';
+                        $result['featured'] = isset($result['featured']) ? (bool)$result['featured'] : false;
+                        return $result;
+                    }
+                } else {
+                    // MySQLi
+                    $stmt = $db->prepare("SELECT * FROM posts WHERE id = ?");
+                    $stmt->bind_param("i", $id);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    if ($row = $result->fetch_assoc()) {
+                        $row['author'] = $row['author'] ?? 'Onbekend';
+                        $row['featured'] = isset($row['featured']) ? (bool)$row['featured'] : false;
+                        return $row;
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Database getPostById failed: " . $e->getMessage());
+        }
+    }
+    
+    // Fallback to JSON
     $posts = getAllPosts();
     foreach ($posts as $post) {
         if ($post['id'] == $id) {
@@ -137,6 +350,38 @@ function createPost($title, $content, $status = 'draft', $author = 'Onbekend') {
         $content = textToHtml($content);
     }
     
+    // Try database first if available
+    if (isDatabaseWorking()) {
+        try {
+            $db = getDatabaseConnection();
+            if ($db) {
+                $date = date('Y-m-d H:i:s');
+                $createdAt = $date;
+                
+                if ($db instanceof PDO) {
+                    $stmt = $db->prepare("INSERT INTO posts (title, content, status, author, date, created_at) VALUES (?, ?, ?, ?, ?, ?)");
+                    if ($stmt->execute([$title, $content, $status, $author, $date, $createdAt])) {
+                        // Get the ID of the inserted post
+                        $id = $db->lastInsertId();
+                        return getPostById($id);
+                    }
+                } else {
+                    // MySQLi
+                    $stmt = $db->prepare("INSERT INTO posts (title, content, status, author, date, created_at) VALUES (?, ?, ?, ?, ?, ?)");
+                    $stmt->bind_param("ssssss", $title, $content, $status, $author, $date, $createdAt);
+                    if ($stmt->execute()) {
+                        // Get the ID of the inserted post
+                        $id = $db->insert_id;
+                        return getPostById($id);
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Database createPost failed: " . $e->getMessage());
+        }
+    }
+    
+    // Fallback to JSON
     $posts = getAllPosts();
     
     // Generate unique incremental ID
@@ -173,6 +418,29 @@ function updatePost($id, $title, $content, $status, $author = null) {
         $content = textToHtml($content);
     }
     
+    // Try database first if available
+    if (isDatabaseWorking()) {
+        try {
+            $db = getDatabaseConnection();
+            if ($db) {
+                $date = date('Y-m-d H:i:s');
+                
+                if ($db instanceof PDO) {
+                    $stmt = $db->prepare("UPDATE posts SET title = ?, content = ?, status = ?, author = ?, date = ?, updated_at = ? WHERE id = ?");
+                    return $stmt->execute([$title, $content, $status, $author, $date, $date, $id]);
+                } else {
+                    // MySQLi
+                    $stmt = $db->prepare("UPDATE posts SET title = ?, content = ?, status = ?, author = ?, date = ?, updated_at = ? WHERE id = ?");
+                    $stmt->bind_param("ssssssi", $title, $content, $status, $author, $date, $date, $id);
+                    return $stmt->execute();
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Database updatePost failed: " . $e->getMessage());
+        }
+    }
+    
+    // Fallback to JSON
     $posts = getAllPosts();
     
     foreach ($posts as &$post) {
@@ -198,43 +466,72 @@ function updatePost($id, $title, $content, $status, $author = null) {
  * Delete post by ID
  */
 function deletePost($id) {
+    // Try database first if available
+    if (isDatabaseWorking()) {
+        try {
+            $db = getDatabaseConnection();
+            if ($db) {
+                if ($db instanceof PDO) {
+                    $stmt = $db->prepare("DELETE FROM posts WHERE id = ?");
+                    return $stmt->execute([$id]);
+                } else {
+                    // MySQLi
+                    $stmt = $db->prepare("DELETE FROM posts WHERE id = ?");
+                    $stmt->bind_param("i", $id);
+                    return $stmt->execute();
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Database deletePost failed: " . $e->getMessage());
+        }
+    }
+    
+    // Fallback to JSON
     $posts = getAllPosts();
     $posts = array_filter($posts, function($post) use ($id) {
         return $post['id'] != $id;
     });
     
-    savePosts(array_values($posts)); // Re-index array
+    return savePosts(array_values($posts)); // Re-index array
 }
 
 /**
- * Search posts by title
+ * Convert plain text with newlines to HTML paragraphs
  */
-function searchPosts($query) {
-    $posts = getPublishedPosts();
-    
-    if (empty($query)) {
-        return $posts;
+function textToHtml($text) {
+    if ($text === null || trim($text) === '') {
+        return '';
     }
     
-    return array_filter($posts, function($post) use ($query) {
-        return stripos($post['title'], $query) !== false;
-    });
+    // Normalize line endings
+    $text = str_replace(["\r\n", "\r"], "\n", $text);
+    
+    // If it already has proper HTML block elements, leave it alone
+    if (preg_match('/<(p|div|h[1-6]|ul|ol|blockquote|pre)(\s|>)/i', $text)) {
+        return $text;
+    }
+    
+    // Split into paragraphs (separated by double newlines)
+    $paragraphs = preg_split('/\n\s*\n/', $text, -1, PREG_SPLIT_NO_EMPTY);
+    
+    // Process each paragraph with nl2br
+    $htmlParagraphs = [];
+    foreach ($paragraphs as $paragraph) {
+        $paragraph = trim($paragraph);
+        if ($paragraph !== '') {
+            $htmlParagraphs[] = "<p>" . nl2br($paragraph) . "</p>";
+        }
+    }
+    
+    return implode("\n", $htmlParagraphs);
 }
 
 /**
  * Format date for display
  */
-/**
- * Format date for display in ISO 8601 format (without T separator)
- */
 function formatDate($dateString) {
-    // Handle numeric timestamps (convert to string format first)
-    if (is_numeric($dateString)) {
-        $dateString = date('Y-m-d H:i:s', $dateString);
-    }
-    
     $date = new DateTime($dateString);
-    return $date->format('Y-m-d H:i:s'); // ISO 8601 format without T
+    return $date->format('d M Y');
 }
 
 /**
@@ -247,6 +544,16 @@ function truncateText($text, $length = 150) {
     }
     
     return substr($text, 0, $length) . '...';
+}
+
+/**
+ * Generate slug from title for SEO-friendly URLs
+ */
+function generateSlug($title) {
+    $slug = strtolower($title);
+    $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+    $slug = preg_replace('/\s+/', '-', $slug);
+    return trim($slug, '-');
 }
 
 /**
@@ -291,35 +598,4 @@ function sanitizeHtml($html) {
     }, $clean);
 
     return $clean;
-}
-
-/**
- * Convert plain text with newlines to HTML paragraphs
- */
-function textToHtml($text) {
-    if ($text === null || trim($text) === '') {
-        return '';
-    }
-    
-    // Normalize line endings
-    $text = str_replace(["\r\n", "\r"], "\n", $text);
-    
-    // If it already has proper HTML block elements, leave it alone
-    if (preg_match('/<(p|div|h[1-6]|ul|ol|blockquote|pre)(\s|>)/i', $text)) {
-        return $text;
-    }
-    
-    // Split into paragraphs (separated by double newlines)
-    $paragraphs = preg_split('/\n\s*\n/', $text, -1, PREG_SPLIT_NO_EMPTY);
-    
-    // Process each paragraph with nl2br
-    $htmlParagraphs = [];
-    foreach ($paragraphs as $paragraph) {
-        $paragraph = trim($paragraph);
-        if ($paragraph !== '') {
-            $htmlParagraphs[] = "<p>" . nl2br($paragraph) . "</p>";
-        }
-    }
-    
-    return implode("\n", $htmlParagraphs);
 }

@@ -72,7 +72,7 @@ function getDatabaseConnection() {
         }
         
         // Try SQLite as a last resort
-        if (extension_loaded('pdo') && extension_loaded('pdo_sqlite')) {
+        if (true) { // Always try SQLite
             try {
                 // Create the database directory if it doesn't exist
                 $dbDir = dirname(SQLITE_DB_PATH);
