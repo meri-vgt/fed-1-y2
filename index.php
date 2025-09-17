@@ -1044,6 +1044,7 @@ if ($page === 'post') {
     </script>
 
     <?php include 'includes/footer.php'; ?>
+<?php } elseif ($page === 'disclaimer') { ?>
     <?php $pageTitle = 'Disclaimer & Veiligheidsregels'; include 'includes/header.php'; ?>
     <section class="page-header">
         <h1>Disclaimer & Veiligheidsregels</h1>
