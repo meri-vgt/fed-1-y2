@@ -164,27 +164,11 @@ function confirmDelete(postId, postTitle) {
     return false;
 }
 
-// Rich Text Editor Enhancement (Simple)
+// Auto-resize textarea for content textareas
 document.addEventListener('DOMContentLoaded', function() {
     const textareas = document.querySelectorAll('textarea[name="content"]');
     
     textareas.forEach(textarea => {
-        // Add simple formatting shortcuts
-        textarea.addEventListener('keydown', function(e) {
-            if (e.ctrlKey || e.metaKey) {
-                switch(e.key) {
-                    case 'b':
-                        e.preventDefault();
-                        insertFormatting(this, '**', '**');
-                        break;
-                    case 'i':
-                        e.preventDefault();
-                        insertFormatting(this, '*', '*');
-                        break;
-                }
-            }
-        });
-        
         // Auto-resize textarea
         textarea.addEventListener('input', function() {
             this.style.height = 'auto';
@@ -192,21 +176,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
-function insertFormatting(textarea, start, end) {
-    const startPos = textarea.selectionStart;
-    const endPos = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(startPos, endPos);
-    
-    const replacement = start + selectedText + end;
-    
-    textarea.value = textarea.value.substring(0, startPos) + replacement + textarea.value.substring(endPos);
-    
-    // Restore cursor position
-    textarea.selectionStart = startPos + start.length;
-    textarea.selectionEnd = startPos + start.length + selectedText.length;
-    textarea.focus();
-}
 
 // Dynamic Background Animation
 document.addEventListener('DOMContentLoaded', function() {

@@ -413,8 +413,11 @@ function createPost($title, $content, $status = 'draft', $author = 'Onbekend') {
  * Update existing post
  */
 function updatePost($id, $title, $content, $status, $author = null) {
-    // Always convert content to HTML to ensure line breaks work
-    if (!empty(trim($content))) {
+    // Convert plain text to HTML if it doesn't already contain significant HTML tags
+    // Check for block-level elements or common inline formatting tags
+    $hasHtmlTags = preg_match('/<(p|div|h[1-6]|ul|ol|li|strong|em|u|s|br|blockquote|pre)>/i', $content);
+    
+    if (!$hasHtmlTags && !empty(trim($content))) {
         $content = textToHtml($content);
     }
     
@@ -598,4 +601,16 @@ function sanitizeHtml($html) {
     }, $clean);
 
     return $clean;
+}
+
+function searchPosts($query) {
+    $posts = getPublishedPosts();
+
+    if (empty($query)) {
+        return $posts;
+    }
+
+    return array_filter($posts, function($post) use ($query) {
+        return stripos($post['title'], $query) !== false;
+    });
 }

@@ -75,7 +75,18 @@ function renderHomeView() {
             <span>🔍 Misdaadverslag</span>
         </div>
         <div class="post-content">
-            <?php echo sanitizeHtml($featuredPost['content']); ?>
+            <?php 
+            // Convert plain text to HTML if needed before sanitizing
+            $featuredContent = $featuredPost['content'];
+            // Check if content has HTML block elements
+            $hasHtmlBlocks = preg_match('/<(p|div|h[1-6]|ul|ol|blockquote|pre)(\s|>)/i', $featuredContent);
+            
+            if (!$hasHtmlBlocks && !empty(trim($featuredContent))) {
+                $featuredContent = textToHtml($featuredContent);
+            }
+            
+            echo sanitizeHtml($featuredContent); 
+            ?>
         </div>
         <a href="<?php echo getBaseUrl(); ?>/?page=post&id=<?php echo $featuredPost['id']; ?>" class="btn btn-primary mt-2">Lees Volledig Artikel</a>
     </article>
@@ -93,7 +104,18 @@ function renderHomeView() {
                         <span>✍️ <?php echo htmlspecialchars($post['author'] ?? 'Onbekend'); ?></span>
                     </div>
                     <div class="post-excerpt">
-                        <?php echo truncateText(sanitizeHtml($post['content']), 120); ?>
+                        <?php 
+                        // Convert plain text to HTML if needed before truncating and sanitizing
+                        $excerptContent = $post['content'];
+                        // Check if content has HTML block elements
+                        $hasHtmlBlocks = preg_match('/<(p|div|h[1-6]|ul|ol|blockquote|pre)(\s|>)/i', $excerptContent);
+                        
+                        if (!$hasHtmlBlocks && !empty(trim($excerptContent))) {
+                            $excerptContent = textToHtml($excerptContent);
+                        }
+                        
+                        echo truncateText(sanitizeHtml($excerptContent), 120); 
+                        ?>
                     </div>
                 </a>
             <?php endforeach; ?>
@@ -157,7 +179,18 @@ if ($page === 'post') {
             </div>
         </header>
         <div class="post-content" style="font-size: 1.1rem; line-height: 1.8;">
-            <?php echo sanitizeHtml($post['content']); ?>
+            <?php 
+            // Convert plain text to HTML if needed before sanitizing
+            $content = $post['content'];
+            // Check if content has HTML block elements
+            $hasHtmlBlocks = preg_match('/<(p|div|h[1-6]|ul|ol|blockquote|pre)(\s|>)/i', $content);
+            
+            if (!$hasHtmlBlocks && !empty(trim($content))) {
+                $content = textToHtml($content);
+            }
+            
+            echo sanitizeHtml($content); 
+            ?>
         </div>
         <footer class="post-footer" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
@@ -187,7 +220,18 @@ if ($page === 'post') {
                             <span>📅 <?php echo formatDate($relatedPost['date']); ?></span>
                         </div>
                         <div class="post-excerpt">
-                            <?php echo truncateText(sanitizeHtml($relatedPost['content']), 100); ?>
+                            <?php 
+                            // Convert plain text to HTML if needed before truncating and sanitizing
+                            $relatedContent = $relatedPost['content'];
+                            // Check if content has HTML block elements
+                            $hasHtmlBlocks = preg_match('/<(p|div|h[1-6]|ul|ol|blockquote|pre)(\s|>)/i', $relatedContent);
+                            
+                            if (!$hasHtmlBlocks && !empty(trim($relatedContent))) {
+                                $relatedContent = textToHtml($relatedContent);
+                            }
+                            
+                            echo truncateText(sanitizeHtml($relatedContent), 100); 
+                            ?>
                         </div>
                     </a>
                 <?php endforeach; ?>
@@ -228,7 +272,18 @@ if ($page === 'post') {
                                 <span>🔍 Misdaadverslag</span>
                             </div>
                             <div class="post-excerpt">
-                                <?php echo truncateText(sanitizeHtml($post['content']), 150); ?>
+                                <?php 
+                                // Convert plain text to HTML if needed before truncating and sanitizing
+                                $searchContent = $post['content'];
+                                // Check if content has HTML block elements
+                                $hasHtmlBlocks = preg_match('/<(p|div|h[1-6]|ul|ol|blockquote|pre)(\s|>)/i', $searchContent);
+                                
+                                if (!$hasHtmlBlocks && !empty(trim($searchContent))) {
+                                    $searchContent = textToHtml($searchContent);
+                                }
+                                
+                                echo truncateText(sanitizeHtml($searchContent), 150); 
+                                ?>
                             </div>
                         </a>
                     <?php endforeach; ?>
@@ -304,7 +359,17 @@ if ($page === 'post') {
                                 <td>
                                     <strong><?php echo htmlspecialchars($post['title']); ?></strong>
                                     <br>
-                                    <small style="color: #71717a;">✍️ <?php echo htmlspecialchars($post['author'] ?? 'Onbekend'); ?> · <?php echo truncateText(strip_tags($post['content']), 60); ?></small>
+                                    <small style="color: #71717a;">✍️ <?php echo htmlspecialchars($post['author'] ?? 'Onbekend'); ?> · <?php 
+                                    // Convert plain text to HTML if needed before truncating
+                                    $adminContent = $post['content'];
+                                    // Check if content has HTML block elements
+                                    $hasHtmlBlocks = preg_match('/<(p|div|h[1-6]|ul|ol|blockquote|pre)(\s|>)/i', $adminContent);
+                                    
+                                    if (!$hasHtmlBlocks && !empty(trim($adminContent))) {
+                                        $adminContent = textToHtml($adminContent);
+                                    }
+                                    
+                                    echo truncateText(strip_tags($adminContent), 60); ?></small>
                                 </td>
                                 <td>
                                     <span class="status-badge status-<?php echo $post['status']; ?>"><?php echo $post['status'] === 'published' ? 'Gepubliceerd' : 'Concept'; ?></span>
@@ -470,16 +535,19 @@ if ($page === 'post') {
                 if (isset($_POST['content'])) {
                     echo htmlspecialchars($_POST['content']);
                 } else {
-                    // Show content in editor with formatting tags but without structural tags
+                    // Show content in editor preserving line breaks
                     $editableContent = $post['content'];
-                    // Remove structural HTML tags but preserve formatting tags
-                    $editableContent = str_replace(['<p>', '</p>', '<div>', '</div>'], '', $editableContent);
-                    $editableContent = str_replace(['<br>', '<br/>', '<br />'], "\n", $editableContent);
-                    // Normalize line endings
-                    $editableContent = str_replace(["\r\n", "\r"], "\n", $editableContent);
+                    // Convert <p> tags to double line breaks
+                    $editableContent = preg_replace('/<\/p>\s*<p>/', "\n\n", $editableContent);
+                    $editableContent = preg_replace('/<p>/', '', $editableContent);
+                    $editableContent = preg_replace('/<\/p>/', '', $editableContent);
+                    // Convert <br> tags to line breaks
+                    $editableContent = preg_replace('/<br\s*\/?>/', "\n", $editableContent);
+                    // Remove other HTML tags but preserve formatting tags for display
+                    $editableContent = strip_tags($editableContent, '<strong><em><u><s>');
                     // Decode HTML entities
-                    $editableContent = html_entity_decode($editableContent);
-                    echo htmlspecialchars($editableContent);
+                    $editableContent = html_entity_decode($editableContent, ENT_QUOTES, 'UTF-8');
+                    echo $editableContent;
                 }
                 ?></textarea>
             </div>
@@ -958,7 +1026,18 @@ if ($page === 'post') {
             </div>
             
             <div style="color: #a1a1aa; line-height: 1.6;">
-                <?php echo truncateText($post['content'], 200); ?>
+                <?php 
+                // Convert plain text to HTML if needed before truncating
+                $deleteContent = $post['content'];
+                // Check if content has HTML block elements
+                $hasHtmlBlocks = preg_match('/<(p|div|h[1-6]|ul|ol|blockquote|pre)(\s|>)/i', $deleteContent);
+                
+                if (!$hasHtmlBlocks && !empty(trim($deleteContent))) {
+                    $deleteContent = textToHtml($deleteContent);
+                }
+                
+                echo truncateText($deleteContent, 200); 
+                ?>
             </div>
         </div>
         
