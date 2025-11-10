@@ -2,6 +2,8 @@
 
 A PHP-based blog platform inspired by the Criminal Minds TV series, featuring CRUD operations, search functionality, and admin panel for content management.
 
+** This project was merely made for educational purposes as an introduction to PHP and SQL Database. I am not responsible for any low-quality code as this is merely meant to showcase the final result. **
+
 ## Features
 
 - Blog post management (Create, Read, Update, Delete)
