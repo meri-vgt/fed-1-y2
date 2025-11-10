@@ -1,2 +1,6 @@
 data/posts.json
 database/
+.idea/
+.vscode/
+.DS_Store
+*.log
