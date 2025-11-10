@@ -4,3 +4,4 @@ database/
 .vscode/
 .DS_Store
 *.log
+test_*.php
